@@ -219,6 +219,19 @@ Dry run is a contract between the runner and your hooks, not a sandbox: a hook t
 
 A fixture's `expect` is checked before anything runs: an unknown `decision`, a `handlers` or `exit_code` that is not a whole number, or a `reason_contains` that is not a string is reported as an error for that file, and the run exits 1.
 
+JSON-looking stdout also receives the output checks below, shown beside the handler and included in the fixture's `output_warnings` JSON report. Parsed JSON is checked on every exit code; plain text and nonzero exit-code semantics are unchanged. Warnings never alter replay verdicts unless the fixture opts in with `"expect": {"strict_output": true}`, which counts each warning as a failure.
+
+### `cc-hooks validate`
+
+```sh
+cc-hooks validate response.json --event PreToolUse
+printf '%s' '{"permissionDecision":"deny"}' | cc-hooks validate --event PreToolUse --json
+```
+
+`cc-hooks validate` reads a hook's JSON response from a file (or stdin when the file is `-` or omitted) and distinguishes JSON that parses from a documented event response. It checks field placement, JSON types, decision enums, event-name mismatches, missing block reasons and known ignored combinations. Exit codes are 0 for no warnings, 1 for advisory warnings and 2 for malformed JSON or a read error. `--json` emits `{event, valid, warnings}`; here `valid` means no registry warnings, not a guarantee that Claude Code will apply the response.
+
+The checks live in `cc_hooks.validate_output(event, payload)`, backed by the exported `OUTPUT_FIELDS` registry, which covers all events in `events.py` with `OutputField` type/enum metadata. Its scope follows the [official hooks reference](https://code.claude.com/docs/en/hooks), checked on 2026-10-22. Unknown extension fields are warnings, not fatal errors. Replacement tool outputs are recognized but their tool-specific schemas are not validated; elicitation form properties and permission-update entries are not deeply validated. This is an offline documentation check, not runtime emulation.
+
 ### `cc-hooks record`
 
 When converting recordings, repeated `(hook_event_name, tool_name, tool_input)`

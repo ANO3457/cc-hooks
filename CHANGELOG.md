@@ -6,7 +6,9 @@ All notable changes to this project are documented here. The format follows
 
 ## [Unreleased]
 
-Nothing yet.
+### Added
+
+- `cc-hooks validate FILE --event NAME` checks event-specific output fields, placement, types, enums and documented ignored combinations. Replay (`cc-hooks test`) prints the same advisory warnings, includes them in JSON reports without changing verdicts, and counts them as failures when `expect.strict_output` is true (#6).
 
 ## [0.2.0] - 2026-10-28
 
