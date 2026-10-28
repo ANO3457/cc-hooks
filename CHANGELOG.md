@@ -6,7 +6,9 @@ All notable changes to this project are documented here. The format follows
 
 ## [Unreleased]
 
-Nothing yet.
+### Added
+
+- Recorded-fixture conversion deduplicates event/tool/input identities by default, supports repeatable `--event`/`--tool` filters and timezone-aware `--since`, preserves sparse fixture numbering and offers `--keep-duplicates` (#8).
 
 ## [0.1.2] - 2026-10-16
 
